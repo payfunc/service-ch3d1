@@ -1,2 +1,5 @@
-export namespace api {
+import * as api from "./api"
+
+export {
+	api
 }
