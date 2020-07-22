@@ -1,4 +1,4 @@
-import { Eci } from "../../Eci"
+import { Eci } from "../Eci"
 
 export interface Response {
 	acs_url: string
