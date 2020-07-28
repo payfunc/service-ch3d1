@@ -4,6 +4,7 @@ import { enrolled as apiEnrolled } from "./enrolled"
 
 // tslint:disable-next-line: no-shadowed-variable
 export namespace check {
+	export const post = apiCheck.post
 	export type Request = apiCheck.Request
 	export namespace Request {
 		export const is = apiCheck.Request.is
@@ -19,6 +20,7 @@ export namespace Eci {
 }
 // tslint:disable-next-line: no-shadowed-variable
 export namespace enrolled {
+	export const post = apiEnrolled.post
 	export type Request = apiEnrolled.Request
 	export namespace Request {
 		export const is = apiEnrolled.Request.is
