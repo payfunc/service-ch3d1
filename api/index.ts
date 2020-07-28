@@ -23,6 +23,7 @@ export namespace enrolled {
 	export const post = apiEnrolled.post
 	export type Request = apiEnrolled.Request
 	export namespace Request {
+		export const orderIdLimit = apiEnrolled.Request.orderIdLimit
 		export const is = apiEnrolled.Request.is
 	}
 	export type Response = apiEnrolled.Response

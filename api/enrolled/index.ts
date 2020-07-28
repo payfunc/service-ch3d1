@@ -11,6 +11,7 @@ export namespace enrolled {
 	}
 	export type Request = enrolledRequest
 	export namespace Request {
+		export const orderIdLimit = enrolledRequest.orderIdLimit
 		export const is = enrolledRequest.is
 	}
 	export type Response = enrolledResponse
