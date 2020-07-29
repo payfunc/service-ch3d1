@@ -16,5 +16,6 @@ export namespace check {
 	export type Response = checkResponse
 	export namespace Response {
 		export const is = checkResponse.is
+		export const verify = checkResponse.verify
 	}
 }
