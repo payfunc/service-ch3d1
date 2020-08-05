@@ -14,6 +14,10 @@ export namespace check {
 		export const is = apiCheck.Response.is
 		export const verify = apiCheck.Response.verify
 	}
+	export type Error = apiCheck.Error
+	export namespace Error {
+		export const is = apiCheck.Error.is
+	}
 }
 export type Eci = apiEci
 export namespace Eci {
