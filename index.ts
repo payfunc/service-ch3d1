@@ -3,7 +3,7 @@ import * as gracely from "gracely"
 import * as model from "@payfunc/model"
 import * as api from "./api"
 
-async function check(key: authly.Token, merchant: model.Merchant.Key, token: authly.Token): Promise<api.check.Response | gracely.Error> {
+async function check(key: authly.Token, merchant: model.Merchant.Key, token: authly.Token): Promise<api.check.Response | api.check.Error | gracely.Error> {
 	return (!merchant.card || merchant.card.emv3d?.protocol != "ch3d1") ? gracely.client.unauthorized() : api.check.post({ url: merchant.card.url, key }, {}, token)
 }
 

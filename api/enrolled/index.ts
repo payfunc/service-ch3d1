@@ -17,5 +17,7 @@ export namespace enrolled {
 	export type Response = enrolledResponse
 	export namespace Response {
 		export const is = enrolledResponse.is
+		export const isOk = enrolledResponse.isOk
+		export const error = enrolledResponse.error
 	}
 }
