@@ -34,5 +34,7 @@ export namespace enrolled {
 	export type Response = apiEnrolled.Response
 	export namespace Response {
 		export const is = apiEnrolled.Response.is
+		export const isOk = apiEnrolled.Response.isOk
+		export const error = apiEnrolled.Response.error
 	}
 }
