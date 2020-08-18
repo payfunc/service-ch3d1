@@ -8,16 +8,16 @@ describe("service.ch3d1.api.checked.Error", () => {
 			error: {
 				param: "pares",
 				type: "invalid_param",
-				message: null
-			}
+				message: null,
+			},
 		}
 		expect(Error.is(realFailed1)).toBeTruthy()
 		const realFailed2 = {
 			error: {
 				param: "pares",
 				type: "presence",
-				message: null
-			}
+				message: null,
+			},
 		}
 		expect(Error.is(realFailed2)).toBeTruthy()
 	})
