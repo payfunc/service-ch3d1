@@ -13,18 +13,13 @@ async function enrolled(key: authly.Token, merchant: model.Merchant.Key.KeyInfo,
 	return !merchant.card ? gracely.client.unauthorized() : api.enrolled.post({ url: merchant.card.url, key }, request, token)
 }
 
-export class Ch3d1 extends model.PaymentVerifier {
-	private constructor(
-		readonly reference: Readonly<model.Log.Reference>,
-		readonly payment: Readonly<model.Payment.Creatable>,
-		readonly items: number | model.Item | model.Item[],
-		readonly customer: Readonly<model.Customer> | undefined,
-		readonly client: { readonly ip?: string },
+export class Verifier extends model.PaymentVerifier {
+	public constructor(
 	) {
 		super()
 	}
 
-	async verify(key: authly.Token, request: model.PaymentVerifier.Request, force?: boolean): Promise<model.PaymentVerifier.Response> {
+	public async verify(key: authly.Token, request: model.PaymentVerifier.Request, force?: boolean): Promise<model.PaymentVerifier.Response> {
 		let result: model.PaymentVerifier.Response | gracely.Error
 		let rawResponse
 		const merchant = await model.Merchant.Key.KeyInfo.unpack(key, "public") ?? await model.Merchant.Key.KeyInfo.unpack(key, "private")
