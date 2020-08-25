@@ -49,10 +49,10 @@
 		"clean": "rm -rf dist node_modules coverage"
 	},
 	"dependencies": {
-		"@cardfunc/model": "0.0.70",
-		"@payfunc/model": "0.1.81",
+		"@cardfunc/model": "0.0.74",
+		"@payfunc/model": "0.1.89",
 		"authly": "0.0.40",
-		"gracely": "0.0.33",
+		"gracely": "0.0.35",
 		"isoly": "0.0.15",
 		"eslint-plugin-prettierx": "github:nilssonemma/eslint-plugin-prettierx#master",
 		"prettierx": "github:simonmika/prettierx#newline-before-clause",
