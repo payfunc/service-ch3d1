@@ -54,8 +54,14 @@ export class Verifier extends model.PaymentVerifier {
 					"not a card or account token"
 				)
 			else {
-				if (await card.Account.verify(token))
-					token = await accountToCardToken(key, merchant, token)
+				const method =
+					request.payment.type == "card" && request.payment.account
+						? await model.Account.Method.Card.Creatable.verify(request.payment.account)
+						: undefined
+				if (method)
+					token = method.card ?? method.reference
+				if ((await card.Card.Token.verify(token))?.type == "single use" || (await card.Account.verify(token)))
+					token = await accountToCardToken(key, merchant as model.Merchant.Key.KeyInfo, token)
 				if (gracely.Error.is(token))
 					result = token
 				else {
