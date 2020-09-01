@@ -33,7 +33,8 @@ export class Verifier extends model.PaymentVerifier {
 	public async verify(
 		key: authly.Token,
 		request: model.PaymentVerifier.Request,
-		force?: boolean
+		force?: boolean,
+		logFunction?: (step: string, level: "trace" | "debug" | "warning" | "error" | "fatal", content: any) => void
 	): Promise<model.PaymentVerifier.Response> {
 		let result: model.PaymentVerifier.Response | gracely.Error
 		const merchant =
@@ -80,6 +81,8 @@ export class Verifier extends model.PaymentVerifier {
 								result = model.PaymentVerifier.Response.unverified()
 							else {
 								const checkResponse = await check(key, merchant, token)
+								if (logFunction)
+									logFunction("ch3d1.check", "trace", { token, response: checkResponse })
 								if (gracely.Error.is(checkResponse))
 									result = checkResponse
 								else if (!api.check.Error.is(checkResponse) && api.check.Response.is(checkResponse)) {
@@ -108,6 +111,12 @@ export class Verifier extends model.PaymentVerifier {
 								cardholder_ip: request.client.ip ?? "",
 							}
 							const enrolledResponse = await enrolled(key, merchant, enrolledRequest, token)
+							if (logFunction)
+								logFunction("ch3d1.enrolled", "trace", {
+									token,
+									request: enrolledRequest,
+									response: enrolledResponse,
+								})
 							result = gracely.Error.is(enrolledResponse)
 								? enrolledResponse
 								: api.enrolled.Response.isOk(enrolledResponse)
