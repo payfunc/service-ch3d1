@@ -77,20 +77,22 @@ export class Verifier extends model.PaymentVerifier {
 					else {
 						if (!force) {
 							// check
-							if (!cardToken.verification || cardToken.verification.type != "pares")
-								result = model.PaymentVerifier.Response.unverified()
-							else {
-								const checkResponse = await check(key, merchant, token)
-								if (logFunction)
-									logFunction("ch3d1.check", "trace", { token, response: checkResponse })
-								if (gracely.Error.is(checkResponse))
-									result = checkResponse
-								else if (!api.check.Error.is(checkResponse) && api.check.Response.is(checkResponse)) {
-									const verifyResponse = api.check.Response.verify(checkResponse)
-									result = gracely.Error.is(verifyResponse) ? verifyResponse : model.PaymentVerifier.Response.verified()
-								} else
-									result = gracely.server.backendFailure("Unexpected answer from cardfunc")
-							}
+							// if (!cardToken.verification || cardToken.verification.type != "pares")
+							// 	result = model.PaymentVerifier.Response.unverified()
+							// else {
+							const checkResponse = await check(key, merchant, token)
+							if (logFunction)
+								logFunction("ch3d1.check", "trace", { token, response: checkResponse })
+							if (gracely.Error.is(checkResponse))
+								result = checkResponse
+							else if (!api.check.Error.is(checkResponse) && api.check.Response.is(checkResponse)) {
+								const verifyResponse = api.check.Response.verify(checkResponse)
+								result = gracely.Error.is(verifyResponse)
+									? model.PaymentVerifier.Response.unverified()
+									: model.PaymentVerifier.Response.verified()
+							} else
+								result = gracely.server.backendFailure("Unexpected answer from cardfunc")
+							// }
 						} else {
 							// enrolled
 							const currency =
