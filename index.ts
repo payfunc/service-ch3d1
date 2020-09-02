@@ -84,7 +84,10 @@ export class Verifier extends model.PaymentVerifier {
 							if (logFunction)
 								logFunction("ch3d1.check", "trace", { token, response: checkResponse })
 							if (gracely.Error.is(checkResponse))
-								result = checkResponse
+								result =
+									checkResponse.type == "missing property" && (checkResponse as any).content?.property == "pares"
+										? model.PaymentVerifier.Response.unverified()
+										: checkResponse
 							else if (!api.check.Error.is(checkResponse) && api.check.Response.is(checkResponse)) {
 								const verifyResponse = api.check.Response.verify(checkResponse)
 								result = gracely.Error.is(verifyResponse)
