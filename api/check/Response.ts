@@ -3,7 +3,7 @@ import * as isoly from "isoly"
 import { Eci } from "../Eci"
 
 export interface Response {
-	amount: string
+	amount: string | number
 	currency: isoly.Currency
 	cavv: string
 	cavv_algorithm: string
@@ -15,19 +15,7 @@ export interface Response {
 }
 export namespace Response {
 	export function is(value: Response | any): value is Response {
-		return (
-			typeof value == "object" &&
-			typeof value.amount == "string" &&
-			isoly.Currency.is(value.currency) &&
-			typeof value.cavv == "string" &&
-			typeof value.cavv_algorithm == "string" &&
-			Eci.is(value.eci) &&
-			typeof value.merchant_id == "string" &&
-			typeof value.last4 == "string" &&
-			value.last4.length == 4 &&
-			(value.status == "Y" || value.status == "A" || value.status == "U" || value.status == "N") &&
-			typeof value.xid == "string"
-		)
+		return typeof value == "object" && Eci.is(value.eci) // Only important property
 	}
 	export function verify(value: Response): gracely.Error | true {
 		let result: gracely.Error | true
