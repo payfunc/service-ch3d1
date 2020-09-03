@@ -91,8 +91,7 @@ export class Verifier extends model.PaymentVerifier {
 								result = gracely.server.backendFailure("Unexpected answer from cardfunc")
 						} else {
 							// enrolled
-							const currency =
-								request.payment.type == "card" ? request.payment.currency ?? merchant.currency ?? "EUR" : "EUR"
+							const currency = request.currency
 							const decimals = isoly.Currency.decimalDigits(currency) || 0
 							const amount = Math.round(
 								model.Item.amount(
