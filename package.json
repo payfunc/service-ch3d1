@@ -50,7 +50,7 @@
 	},
 	"dependencies": {
 		"@cardfunc/model": "0.0.75",
-		"@payfunc/model": "0.1.94",
+		"@payfunc/model": "0.1.96",
 		"authly": "0.0.40",
 		"gracely": "0.0.35",
 		"isoly": "0.0.15",
