@@ -110,7 +110,7 @@ export class Verifier extends model.PaymentVerifier {
 								amount: amount.toString(),
 								currency,
 								order_id: api.enrolled.Request.orderIdLimit(
-									(request.reference.number ?? request.reference.id ?? "0").toString()
+									(request.reference.id ?? request.reference.number ?? "0").toString()
 								),
 								cardholder_ip: request.client.ip ?? "",
 							}
