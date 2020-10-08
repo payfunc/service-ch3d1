@@ -8,7 +8,7 @@ import * as card from "@cardfunc/model"
 
 async function check(
 	key: authly.Token,
-	merchant: model.Merchant.Key.KeyInfo,
+	merchant: model.Key,
 	token: authly.Token
 ): Promise<api.check.Response | api.check.Error | gracely.Error> {
 	return !merchant.card ? gracely.client.unauthorized() : api.check.post({ url: merchant.card.url, key }, {}, token)
@@ -16,7 +16,7 @@ async function check(
 
 async function enrolled(
 	key: authly.Token,
-	merchant: model.Merchant.Key.KeyInfo,
+	merchant: model.Key,
 	request: api.enrolled.Request,
 	token: authly.Token
 ): Promise<api.enrolled.Response | gracely.Error> {
@@ -37,9 +37,7 @@ export class Verifier extends model.PaymentVerifier {
 		logFunction?: (step: string, level: "trace" | "debug" | "warning" | "error" | "fatal", content: any) => void
 	): Promise<model.PaymentVerifier.Response> {
 		let result: model.PaymentVerifier.Response | gracely.Error
-		const merchant =
-			(await model.Merchant.Key.KeyInfo.unpack(key, "public")) ??
-			(await model.Merchant.Key.KeyInfo.unpack(key, "private"))
+		const merchant = await model.Key.unpack(key, "public", "private")
 		if (!merchant)
 			result = gracely.client.unauthorized()
 		else {
@@ -70,7 +68,7 @@ export class Verifier extends model.PaymentVerifier {
 					(request.reference.type == "account" || (request.payment.type == "card" && request.payment.account)) &&
 					((await card.Card.Token.verify(token))?.type == "single use" || (await card.Account.verify(token)))
 				)
-					token = await accountToCardToken(key, merchant as model.Merchant.Key.KeyInfo, token)
+					token = await accountToCardToken(key, merchant, token)
 				if (gracely.Error.is(token))
 					result = token
 				else {
@@ -143,7 +141,7 @@ export class Verifier extends model.PaymentVerifier {
 
 export async function accountToCardToken(
 	key: authly.Token,
-	merchant: model.Merchant.Key.KeyInfo,
+	merchant: model.Key,
 	previous: authly.Token
 ): Promise<authly.Token | gracely.Error> {
 	let result: authly.Token | gracely.Error
