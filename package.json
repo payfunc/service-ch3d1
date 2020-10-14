@@ -50,14 +50,12 @@
 	},
 	"dependencies": {
 		"@cardfunc/model": "0.0.77",
-		"@payfunc/model": "0.1.96",
+		"@payfunc/model": "0.2.2",
 		"authly": "0.0.40",
 		"gracely": "0.0.37",
 		"isoly": "0.0.15",
-		"eslint-plugin-prettierx": "github:nilssonemma/eslint-plugin-prettierx#master",
 		"form-urlencoded": "^4.2.1",
-		"node-fetch": "^2.6.1",
-		"prettierx": "github:simonmika/prettierx#newline-before-clause"
+		"node-fetch": "^2.6.1"
 	},
 	"devDependencies": {
 		"@types/form-urlencoded": "^2.0.1",
@@ -71,6 +69,8 @@
 		"jest": "^26",
 		"ts-jest": "^26.1.0",
 		"eslint": "^7.6.0",
+		"eslint-plugin-prettierx": "github:nilssonemma/eslint-plugin-prettierx#master",
+		"prettierx": "github:simonmika/prettierx#newline-before-clause",
 		"typescript": "^3.9.5",
 		"watch": "^1.0.2"
 	}
