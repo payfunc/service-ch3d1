@@ -41,97 +41,66 @@ export class Verifier extends model.PaymentVerifier {
 		if (!merchant)
 			result = gracely.client.unauthorized()
 		else {
-			let token: authly.Token | gracely.Error | undefined =
+			const token: authly.Token | undefined =
 				request.payment.type == "account"
 					? request.payment.token
 					: request.payment.type == "card"
-					? request.payment.account ??
-					  request.payment.card ??
-					  (authly.Token.is(request.payment.reference)
-							? (await card.Authorization.verify(request.payment.reference))?.reference ?? request.payment.reference
-							: undefined)
+					? request.payment.card
 					: undefined
-			if (!token)
-				result = gracely.client.malformedContent(
-					"request.payment.card | request.payment.account",
-					"model.Card.Token | model.Account.",
-					"not a card or account token"
-				)
+			const cardToken = token ? await card.Card.Token.verify(token) : undefined
+			if (!token || !cardToken)
+				result = gracely.client.malformedContent("request.payment.card", "model.Card.Token", "not a card token")
 			else {
-				const method =
-					request.payment.type == "card" && request.payment.account
-						? await model.Account.Method.Card.Creatable.verify(request.payment.account)
-						: undefined
-				if (method)
-					token = method.card ?? method.reference
-				if (
-					(request.reference.type == "account" || (request.payment.type == "card" && request.payment.account)) &&
-					((await card.Card.Token.verify(token))?.type == "single use" || (await card.Account.verify(token)))
-				)
-					token = await accountToCardToken(key, merchant, token)
-				if (gracely.Error.is(token))
-					result = token
-				else {
-					const cardToken = await card.Card.Token.verify(token)
-					if (!cardToken)
-						result = gracely.client.malformedContent(
-							"request.payment.card | request.payment.account",
-							"model.Card.Token | model.Account.",
-							"not a card or account token"
-						)
-					else {
-						if (!force) {
-							const checkResponse = await check(key, merchant, token)
-							if (logFunction)
-								logFunction("ch3d1.check", "trace", { token, response: checkResponse })
-							if (gracely.Error.is(checkResponse))
-								result =
-									checkResponse.type == "missing property" && (checkResponse as any).content?.property == "pares"
-										? model.PaymentVerifier.Response.unverified()
-										: checkResponse
-							else if (!api.check.Error.is(checkResponse) && api.check.Response.is(checkResponse)) {
-								const verifyResponse = api.check.Response.verify(checkResponse)
-								result = gracely.Error.is(verifyResponse) ? verifyResponse : model.PaymentVerifier.Response.verified()
-							} else
-								result = gracely.server.backendFailure("Unexpected answer from cardfunc")
-						} else {
-							// enrolled
-							const currency = request.currency
-							const decimals = isoly.Currency.decimalDigits(currency) || 0
-							const amount = Math.round(
-								model.Item.amount(
-									request.payment.type == "card" ? request.payment.amount ?? request.items : request.items
-								) *
-									10 ** decimals
-							)
-							const enrolledRequest: api.enrolled.Request = {
-								amount: amount.toString(),
-								currency,
-								order_id: api.enrolled.Request.orderIdLimit(
-									(request.reference.number ?? request.reference.id ?? "0").toString().replace(/[^\x20-\x7E]/g, "") // Only visible ASCII characters allowed
-								),
-								cardholder_ip: request.client.ip ?? "",
-							}
-							const enrolledResponse = await enrolled(key, merchant, enrolledRequest, token)
-							if (logFunction)
-								logFunction("ch3d1.enrolled", "trace", {
-									token,
-									request: enrolledRequest,
-									response: enrolledResponse,
-								})
-							result = gracely.Error.is(enrolledResponse)
-								? enrolledResponse
-								: api.enrolled.Response.isOk(enrolledResponse)
-								? model.PaymentVerifier.Response.verificationRequired(true, "GET", enrolledResponse.acs_url, {
-										pareq: enrolledResponse.pareq,
-								  })
-								: gracely.server.backendFailure(
-										typeof enrolledResponse.error == "object"
-											? enrolledResponse.error?.message ?? enrolledResponse.error?.detail
-											: undefined
-								  )
-						}
+				if (!force) {
+					const checkResponse = await check(key, merchant, token)
+					if (logFunction)
+						logFunction("ch3d1.check", "trace", { token, response: checkResponse })
+					if (gracely.Error.is(checkResponse))
+						result =
+							checkResponse.type == "missing property" && (checkResponse as any).content?.property == "pares"
+								? model.PaymentVerifier.Response.unverified()
+								: checkResponse
+					else if (!api.check.Error.is(checkResponse) && api.check.Response.is(checkResponse)) {
+						const verifyResponse = api.check.Response.verify(checkResponse)
+						result = gracely.Error.is(verifyResponse) ? verifyResponse : model.PaymentVerifier.Response.verified()
+					} else
+						result = gracely.server.backendFailure("Unexpected answer from cardfunc")
+				} else {
+					// enrolled
+					const currency = request.currency
+					const decimals = isoly.Currency.decimalDigits(currency) || 0
+					const amount = Math.round(
+						model.Item.amount(
+							request.payment.type == "card" ? request.payment.amount ?? request.items : request.items
+						) *
+							10 ** decimals
+					)
+					const enrolledRequest: api.enrolled.Request = {
+						amount: amount.toString(),
+						currency,
+						order_id: api.enrolled.Request.orderIdLimit(
+							(request.reference.number ?? request.reference.id ?? "0").toString().replace(/[^\x20-\x7E]/g, "") // Only visible ASCII characters allowed
+						),
+						cardholder_ip: request.client.ip ?? "",
 					}
+					const enrolledResponse = await enrolled(key, merchant, enrolledRequest, token)
+					if (logFunction)
+						logFunction("ch3d1.enrolled", "trace", {
+							token,
+							request: enrolledRequest,
+							response: enrolledResponse,
+						})
+					result = gracely.Error.is(enrolledResponse)
+						? enrolledResponse
+						: api.enrolled.Response.isOk(enrolledResponse)
+						? model.PaymentVerifier.Response.verificationRequired(true, "GET", enrolledResponse.acs_url, {
+								pareq: enrolledResponse.pareq,
+						  })
+						: gracely.server.backendFailure(
+								typeof enrolledResponse.error == "object"
+									? enrolledResponse.error?.message ?? enrolledResponse.error?.detail
+									: undefined
+						  )
 				}
 			}
 		}
