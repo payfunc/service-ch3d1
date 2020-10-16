@@ -108,42 +108,4 @@ export class Verifier extends model.PaymentVerifier {
 	}
 }
 
-export async function accountToCardToken(
-	key: authly.Token,
-	merchant: model.Key,
-	previous: authly.Token
-): Promise<authly.Token | gracely.Error> {
-	let result: authly.Token | gracely.Error
-	if (!merchant.card)
-		result = gracely.client.unauthorized()
-	else if (!card.Card.Token.verify(previous) && !card.Account.verify(previous))
-		result = gracely.client.invalidContent(
-			"token",
-			"authly.Token",
-			'Need a valid card token or an old account token to sign a new "recurring" card Token.'
-		)
-	else {
-		const accountTokenResponse = await fetch(merchant.card.url + "/card/" + previous + "/account", {
-			method: "GET",
-			headers: { authorization: `Bearer ${key}`, "content-type": "application/json; charset=utf-8" },
-		})
-		let accountTokenResponseBody
-		switch (accountTokenResponse.headers.get("content-type")) {
-			case "application/jwt; charset=utf-8":
-				result = await accountTokenResponse.text()
-				break
-			case "application/json; charset=utf-8":
-				accountTokenResponseBody = await accountTokenResponse.json()
-				result = gracely.Error.is(accountTokenResponseBody)
-					? accountTokenResponseBody
-					: gracely.client.invalidContent("token", "authly.Token")
-				break
-			default:
-				result = gracely.server.backendFailure("Unexpected answer from CardFunc.")
-				break
-		}
-	}
-	return result
-}
-
 export { api, check, enrolled }
