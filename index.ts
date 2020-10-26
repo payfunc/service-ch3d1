@@ -93,7 +93,7 @@ export class Verifier extends model.PaymentVerifier {
 					result = gracely.Error.is(enrolledResponse)
 						? enrolledResponse
 						: api.enrolled.Response.isOk(enrolledResponse)
-						? model.PaymentVerifier.Response.verificationRequired(true, "GET", enrolledResponse.acs_url, {
+						? model.PaymentVerifier.Response.verificationRequired(true, "POST", enrolledResponse.acs_url, {
 								pareq: enrolledResponse.pareq,
 						  })
 						: gracely.server.backendFailure(
