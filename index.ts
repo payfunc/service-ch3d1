@@ -4,7 +4,7 @@ import * as gracely from "gracely"
 import * as isoly from "isoly"
 import * as model from "@payfunc/model"
 import * as api from "./api"
-import * as card from "@cardfunc/model"
+import * as card from "@payfunc/model-card"
 
 async function check(
 	key: authly.Token,
