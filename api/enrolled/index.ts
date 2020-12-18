@@ -1,9 +1,9 @@
-import * as authly from "authly"
 import * as gracely from "gracely"
+import * as authly from "authly"
+import { post as cardfuncPost } from "../Cardfunc"
+import { Configuration } from "../Configuration"
 import { Request as enrolledRequest } from "./Request"
 import { Response as enrolledResponse } from "./Response"
-import { Configuration } from "../Configuration"
-import { post as cardfuncPost } from "../Cardfunc"
 
 export namespace enrolled {
 	export async function post(

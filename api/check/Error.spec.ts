@@ -1,6 +1,6 @@
 import * as gracely from "gracely"
-import { Response } from "./Response"
 import { Error } from "./Error"
+import { Response } from "./Response"
 
 describe("service.ch3d1.api.checked.Error", () => {
 	it("is real errors", () => {
