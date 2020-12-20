@@ -1,10 +1,10 @@
-import * as authly from "authly"
 import * as gracely from "gracely"
+import * as authly from "authly"
+import { post as cardfuncPost } from "../Cardfunc"
+import { Configuration } from "../Configuration"
+import { Error as checkError } from "./Error"
 import { Request as checkRequest } from "./Request"
 import { Response as checkResponse } from "./Response"
-import { Error as checkError } from "./Error"
-import { Configuration } from "../Configuration"
-import { post as cardfuncPost } from "../Cardfunc"
 
 export namespace check {
 	export async function post(
