@@ -1,10 +1,9 @@
-import { default as fetch } from "node-fetch"
-import * as authly from "authly"
 import * as gracely from "gracely"
 import * as isoly from "isoly"
+import * as authly from "authly"
+import * as card from "@payfunc/model-card"
 import * as model from "@payfunc/model"
 import * as api from "./api"
-import * as card from "@payfunc/model-card"
 
 async function check(
 	key: authly.Token,
