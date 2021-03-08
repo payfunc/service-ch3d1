@@ -43,7 +43,7 @@
 		"lint": "eslint '*/**/*.{js,ts,tsx}'",
 		"fix": "eslint '*/**/*.{js,ts,tsx}' --fix",
 		"build": "tsc -p .",
-		"test": "jest",
+		"test": "jest --maxWorkers=2",
 		"test:watch": "watch jest",
 		"prepare": "npm run build",
 		"clean": "rm -rf dist node_modules coverage"
