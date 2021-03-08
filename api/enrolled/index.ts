@@ -1,7 +1,8 @@
 import * as gracely from "gracely"
 import * as authly from "authly"
-import { post as cardfuncPost } from "../Cardfunc"
+import * as card from "@payfunc/model-card"
 import { Configuration } from "../Configuration"
+import { post as genericPost } from "../post"
 import { Request as enrolledRequest } from "./Request"
 import { Response as enrolledResponse } from "./Response"
 
@@ -11,7 +12,8 @@ export namespace enrolled {
 		request: Request,
 		token: authly.Token
 	): Promise<Response | gracely.Error> {
-		return cardfuncPost(configuration, `card/${token}/ch3d1/enrolled`, request)
+		const path = (await card.Card.Token.verify(token)) ? `card/ch3d1/${token}/` : `card/${token}/ch3d1/`
+		return genericPost(configuration, `${path}enrolled`, request)
 	}
 	export type Request = enrolledRequest
 	export namespace Request {
