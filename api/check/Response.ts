@@ -1,5 +1,6 @@
 import * as gracely from "gracely"
 import * as isoly from "isoly"
+import * as authly from "authly"
 import { Eci } from "../Eci"
 
 export interface Response {
@@ -12,6 +13,7 @@ export interface Response {
 	last4: string
 	status: "Y" | "A" | "U" | "N"
 	xid: string
+	payfunc?: { token?: authly.Token }
 }
 export namespace Response {
 	export function is(value: Response | any): value is Response {

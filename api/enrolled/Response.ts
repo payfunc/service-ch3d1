@@ -1,3 +1,4 @@
+import * as authly from "authly"
 import { Eci } from "../Eci"
 
 export interface Response {
@@ -9,6 +10,7 @@ export interface Response {
 		message?: string
 		detail?: string
 	}
+	payfunc?: { token?: authly.Token }
 }
 
 export namespace Response {
