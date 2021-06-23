@@ -18,7 +18,5 @@ describe("service-ch3d1", () => {
 			ch3d1.api.enrolled.Response.isOk,
 			ch3d1.api.enrolled.Response.error,
 		]
-		const ch3d1Verifier = new ch3d1.Verifier()
-		expect(ch3d1Verifier.verify).toBeDefined()
 	})
 })
